@@ -1,13 +1,9 @@
 #include "Display.h"
-#include <Servo.h>
-#define Servo_Out 9
+#include "Custom_Servo.h"
 /*--------------------------------------------------------------------------------------------------------------*/
-Servo myservo;  // create servo object to control a servo
 uint8_t potpin = A0;  // analog pin used to connect the potentiometer
-int val;    // variable to read the value from the analog pin
-int angle;    // the angle servo is sent to
-float EMA_a = 1;      //initialization of EMA alpha
-int EMA_S = 0;          //initialization of EMA S
+short val = 0;    // variable to read the value from the analog pin
+short angle = 0;
 /*--------------------------------------------------------------------------------------------------------------*/
 void setup()
 {
@@ -23,10 +19,9 @@ void setup()
 
   pinMode(Servo_Out,OUTPUT);
 
-
   LCD_Setup();
-  // myservo.attach(9);  
-  EMA_S = analogRead(potpin);
+  Servo_Setup();
+
   
   //SetCursor(0,0);
   Print_CMD(SET_DDRAM_ADDR | 0x0);
@@ -48,12 +43,15 @@ void setup()
 void loop()
 { 
   val = analogRead(potpin);
-  EMA_S = (EMA_a*val) + ((1-EMA_a)*EMA_S);
-  Serial.println(EMA_S);
-  angle = map(EMA_S, 0, 1023, 0, 180);
-  analogWrite(Servo_Out, angle);
-  // myservo.write(angle); 
- 
+  /*************************************************************************************************************
+  y = m * x + b
+  m = (out_max - out_min) / (in_max - in_min) 
+  b = out_min = 544
+  **************************************************************************************************************/
+  angle = 1.865 * val + 544; //conversion from 0-1023 range to 544-2400 range
+  OCR1A = angle;
+
+
   Print_CMD(SET_DDRAM_ADDR | 0xB);
   Print_To_LCD("    ");
   Print_CMD(SET_DDRAM_ADDR | 0xB);
