@@ -7,8 +7,6 @@ short angle = 0;
 /*--------------------------------------------------------------------------------------------------------------*/
 void setup()
 {
-  Serial.begin(9600);
-
   pinMode(RS,OUTPUT);
   pinMode(E,OUTPUT);
 
@@ -17,18 +15,11 @@ void setup()
   pinMode(DB6,OUTPUT);
   pinMode(DB7,OUTPUT);
 
+
   pinMode(Servo_Out,OUTPUT);
 
   LCD_Setup();
   Servo_Setup();
-
-  
-  //SetCursor(0,0);
-  Print_CMD(SET_DDRAM_ADDR | 0x0);
-  Print_To_LCD("Robojax Servo");
-  Print_CMD(SET_DDRAM_ADDR | 0x40);
-  Print_To_LCD("Knob");
-  delay(2000);
 
   Print_CMD(CLEAR_SCREEN);
   //SetCursor(0,0);
@@ -37,19 +28,19 @@ void setup()
   //SetCursor(1,0);
   Print_CMD(SET_DDRAM_ADDR | 0x40);
   Print_To_LCD("Angle     :");
-
 }
 /*--------------------------------------------------------------------------------------------------------------*/
 void loop()
 { 
   val = analogRead(potpin);
   /*************************************************************************************************************
+  conversion from in_min-in_max range to out_min-out_max range
   y = m * x + b
   m = (out_max - out_min) / (in_max - in_min) 
   b = out_min = 544
   **************************************************************************************************************/
   angle = 1.865 * val + 544; //conversion from 0-1023 range to 544-2400 range
-  OCR1A = angle;
+  OCR1A = angle;  
 
 
   Print_CMD(SET_DDRAM_ADDR | 0xB);
@@ -58,7 +49,7 @@ void loop()
   Print_To_LCD((int32_t)val);
 
   Print_CMD(SET_DDRAM_ADDR | 0x4B);
-  Print_To_LCD("   ");
+  Print_To_LCD("    ");
   Print_CMD(SET_DDRAM_ADDR | 0x4B);
   Print_To_LCD((int32_t)angle);
 
