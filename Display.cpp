@@ -2,21 +2,9 @@
 #include "Arduino.h"
 #include "Display.h"
 /*--------------------------------------------------------------------------------------------------------------*/
-void Print_DBus(uint8_t num)
+inline void latching()
 {
-  /***************************************************************************************************************
-  digitalWrite(DB4,(num & 0x1) >> 0);
-  digitalWrite(DB5,(num & 0x2) >> 1);
-  digitalWrite(DB6,(num & 0x4) >> 2);
-  digitalWrite(DB7,(num & 0x8) >> 3);
-  ****************************************************************************************************************/
-  (num & 0x1) >> 0 ? PORTD |= (1 << (PD5)) : PORTD &= ~(1 << (PD5));
-  (num & 0x2) >> 1 ? PORTD |= (1 << (PD4)) : PORTD &= ~(1 << (PD4));
-  (num & 0x4) >> 2 ? PORTD |= (1 << (PD3)) : PORTD &= ~(1 << (PD3));
-  (num & 0x8) >> 3 ? PORTD |= (1 << (PD2)) : PORTD &= ~(1 << (PD2));
-
-  // //latching
-  delayMicroseconds(500);
+  delayMicroseconds(750);
   digitalWrite(E,HIGH);
   delayMicroseconds(500);
   digitalWrite(E,LOW);
@@ -27,18 +15,21 @@ void Print_Data(uint8_t data)
 {
   digitalWrite(RS, HIGH);
   //print MSB 4 bits
-  Print_DBus((data & 0xF0) >> 4);
+  PORTD = (data & 0xF0);
+  latching();
   //print LSB 4 bits
-  Print_DBus(data & 0x0F);
-}
+  PORTD = ((data << 4) & 0xF0);
+  latching();}
 /*--------------------------------------------------------------------------------------------------------------*/
 void Print_CMD(uint8_t cmd)
 {
   digitalWrite(RS, LOW);
   //print MSB 4 bits
-  Print_DBus((cmd & 0xF0) >> 4);
+  PORTD = (cmd & 0xF0);
+  latching();
   //print LSB 4 bits
-  Print_DBus(cmd & 0x0F);
+  PORTD = ((cmd << 4) & 0xF0);
+  latching();  
 }
 /*--------------------------------------------------------------------------------------------------------------*/
 void LCD_Setup()
@@ -46,21 +37,24 @@ void LCD_Setup()
   delay(100);
 
   digitalWrite(RS, LOW);
-
   //Sets to 4-bit operation. otherwise, next instructions will be wrong execute
-  Print_DBus(0x3);
+  PORTD = (0x3 << 4) & 0xF0;
+  latching();
   delay(5);
-  Print_DBus(0x3);
+  PORTD = (0x3 << 4) & 0xF0;
+  latching();
   delayMicroseconds(100);
-  Print_DBus(0x3);
+  PORTD = (0x3 << 4) & 0xF0;
+  latching();
   delayMicroseconds(100);
 
-  Print_DBus(0x2);
+  PORTD = (0x2 << 4) & 0xF0;
+  latching();
   delayMicroseconds(100);
-  Print_CMD(FUNCTION_SET | _4BIT_MODE | _2_LINE | _5x8_DOTS);
-  Print_CMD(DISPLAY_CONTROL | DISPLAY_ON );
-  Print_CMD(ENTRY_MODE_SET | ENTRY_LEFT);
-  Print_CMD(CLEAR_SCREEN);
+  Print_CMD(0x28);
+  Print_CMD(0x0C);
+  Print_CMD(0x06);
+  Print_CMD(0x01);
 }
 /*--------------------------------------------------------------------------------------------------------------*/
 void Set_CGRAM(uint8_t* Char_Arr)

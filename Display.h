@@ -7,10 +7,10 @@
 #define Display_h
 /*--------------------------------------------------------------------------------------------------------------*/
 //Port D
-#define DB7       2
-#define DB6       3
-#define DB5       4
-#define DB4       5
+#define DB4       4
+#define DB5       5
+#define DB6       6
+#define DB7       7
 
 //Port B
 #define E   11
@@ -58,6 +58,7 @@
 #define _5x10_DOTS            0x04
 #define _5x8_DOTS             0x00
 /*--------------------------------------------------------------------------------------------------------------*/
+void Print_DBus(uint8_t num);
 //print data to screen
 void Print_Data(uint8_t data);
 
