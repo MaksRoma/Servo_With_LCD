@@ -11,8 +11,9 @@
 #define DB5       5
 #define DB6       6
 #define DB7       7
-
+ 
 //Port B
+#define T_BASE 8 //Transistor base pin
 #define E   11
 #define RS  12
 
@@ -58,7 +59,6 @@
 #define _5x10_DOTS            0x04
 #define _5x8_DOTS             0x00
 /*--------------------------------------------------------------------------------------------------------------*/
-void Print_DBus(uint8_t num);
 //print data to screen
 void Print_Data(uint8_t data);
 

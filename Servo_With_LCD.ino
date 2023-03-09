@@ -9,14 +9,20 @@ void setup()
 {
   pinMode(RS,OUTPUT);
   pinMode(E,OUTPUT);
+  pinMode (T_BASE, OUTPUT);
 
   pinMode(DB4,OUTPUT);
   pinMode(DB5,OUTPUT);
   pinMode(DB6,OUTPUT);
   pinMode(DB7,OUTPUT);
 
-
   pinMode(Servo_Out,OUTPUT);
+
+  //digitalWrite(T_BASE,HIGH);
+  // delay(100);
+  pinMode (T_BASE, LOW);
+  delay(200);
+  digitalWrite(T_BASE,HIGH);
 
   LCD_Setup();
   Servo_Setup();
@@ -56,3 +62,5 @@ void loop()
   delay(500);
 }
 /*--------------------------------------------------------------------------------------------------------------*/
+
+

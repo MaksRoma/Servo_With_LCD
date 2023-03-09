@@ -4,7 +4,7 @@
 /*--------------------------------------------------------------------------------------------------------------*/
 inline void latching()
 {
-  delayMicroseconds(750);
+  delayMicroseconds(600);
   digitalWrite(E,HIGH);
   delayMicroseconds(500);
   digitalWrite(E,LOW);
@@ -38,15 +38,15 @@ void LCD_Setup()
 
   digitalWrite(RS, LOW);
   //Sets to 4-bit operation. otherwise, next instructions will be wrong execute
-  PORTD = (0x3 << 4) & 0xF0;
-  latching();
-  delay(5);
-  PORTD = (0x3 << 4) & 0xF0;
-  latching();
-  delayMicroseconds(100);
-  PORTD = (0x3 << 4) & 0xF0;
-  latching();
-  delayMicroseconds(100);
+  // PORTD = (0x3 << 4) & 0xF0;
+  // latching();
+  // delay(5);
+  // PORTD = (0x3 << 4) & 0xF0;
+  // latching();
+  // delayMicroseconds(100);
+  // PORTD = (0x3 << 4) & 0xF0;
+  // latching();
+  // delayMicroseconds(100);
 
   PORTD = (0x2 << 4) & 0xF0;
   latching();
