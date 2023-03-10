@@ -27,6 +27,11 @@ void setup()
   LCD_Setup();
   Servo_Setup();
 
+  /*ADC Setup*/
+  ADMUX = 0x40; //ADC0 channel, AVCC voltage reference
+  ADCSRA |= (1 << ADEN); //enable ADC
+
+
   Print_CMD(CLEAR_SCREEN);
   //SetCursor(0,0);
   Print_CMD(SET_DDRAM_ADDR | 0x0);
@@ -37,8 +42,16 @@ void setup()
 }
 /*--------------------------------------------------------------------------------------------------------------*/
 void loop()
-{ 
-  val = analogRead(potpin);
+{
+
+  //start conversion
+  ADCSRA |= (1 << ADSC);
+
+  // Wait for conversion to complete
+  while (ADCSRA & (1 << ADSC));
+  
+  //read ADC result
+  val = ADC;
   /*************************************************************************************************************
   conversion from in_min-in_max range to out_min-out_max range
   y = m * x + b
